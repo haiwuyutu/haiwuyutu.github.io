@@ -1,508 +1,556 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智能拼音教学平台</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <title>小朋友拼音教学答题乐园</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", "幼圆", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f8ff;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #ff6b81;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .aigc-link {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border: 2px dashed #4ecdc4;
+        }
+
+        .aigc-link a {
+            color: #2a9d8f;
+            font-size: 1.1rem;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .aigc-link a:hover {
+            text-decoration: underline;
+            color: #21867a;
+        }
+
+        .question-area {
+            background-color: #fef5e7;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            display: none; /* 初始隐藏，显示第一题 */
+        }
+
+        .question-area.active {
+            display: block;
+        }
+
+        .question-title {
+            font-size: 1.5rem;
+            color: #e74c3c;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-item {
+            background-color: #fff;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-item:hover {
+            border-color: #ffc107;
+            background-color: #fff8e1;
+        }
+
+        .option-item.selected {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+
+        .btn-area {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .next-btn {
+            background-color: #ff9800;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none; /* 选择选项后显示 */
+        }
+
+        .next-btn:hover {
+            background-color: #e68900;
+            transform: translateY(-2px);
+        }
+
+        .result-area {
+            background-color: #e8f5e9;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+            display: none; /* 初始隐藏，全部做完后显示 */
+        }
+
+        .result-title {
+            font-size: 2rem;
+            color: #27ae60;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .score-info {
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .answer-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .answer-item {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .answer-question {
+            font-size: 1.2rem;
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+
+        .answer-correct {
+            font-size: 1.1rem;
+            color: #28a745;
+            margin-bottom: 8px;
+        }
+
+        .answer-analysis {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .restart-btn {
+            background-color: #4285f4;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 30px auto 0;
+            display: block;
+        }
+
+        .restart-btn:hover {
+            background-color: #3367d6;
+            transform: translateY(-2px);
+        }
+
+        /* 适配小朋友设备/手机 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 10px auto;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .question-title, .result-title {
+                font-size: 1.3rem;
+            }
+
+            .option-item, .score-info {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部标题 -->
+        <div class="header">
+            <h1>🐼 拼音小达人闯关 🐼</h1>
+            <p>小朋友，快来挑战拼音题目吧！每题10分，共10题哦~</p>
+        </div>
+
+        <!-- AIGC链接区域 -->
+        <div class="aigc-link">
+            <p>遇到拼音难题？可以找AIGC帮忙：</p>
+            <a href="https://www.doubao.com" target="_blank">豆包AIGC - 拼音学习小助手</a>
+        </div>
+
+        <!-- 题目区域（10题） -->
+        <div class="question-container">
+            <!-- 第1题 -->
+            <div class="question-area active" data-index="0">
+                <div class="question-title">第1题：下列哪个是“b”的正确读音？</div>
+                <div class="options">
+                    <div class="option-item" data-answer="false">A. 波（ō）</div>
+                    <div class="option-item" data-answer="true">B. 播（bō）</div>
+                    <div class="option-item" data-answer="false">C. 佛（fó）</div>
+                    <div class="option-item" data-answer="false">D. 德（dé）</div>
+                </div>
+                <div class="btn-area">
+                    <button class="next-btn">下一题 →</button>
+                </div>
+            </div>
+
+            <!-- 第2题 -->
+            <div class="question-area" data-index="1">
+                <div class="question-title">第2题：“苹果”的“苹”拼音是？</div>
+                <div class="options">
+                    <div class="option-item" data-answer="false">A. pǐn</div>
+                    <div class="option-item" data-answer="true">B. píng</div>
+                    <div class="option-item" data-answer="false">C. pīn</div>
+                    <div class="option-item" data-answer="false">D. pìng</div>
+                </div>
+                <div class="btn-area">
+                    <button class="next-btn">下一题 →</button>
+                </div>
+            </div>
+
+            <!-- 第3题 -->
+            <div class="question-area" data-index="2">
+                <div class="question-title">第3题：下列哪个是翘舌音？</div>
+                <div class="options">
+                    <div class="option-item" data-answer="false">A. z</div>
+                    <div class="option-item" data-answer="false">B. c</div>
+                    <div class="option-item" data-answer="true">C. zh</div>
+                    <div class="option-item" data-answer="false">D. s</div>
+                </div>
+                <div class="btn-area">
+                    <button class="next-btn">下一题 →</button>
+                </div>
+            </div>
+
+            <!-- 第4题 -->
+            <div class="question-area" data-index="3">
+                <div class="question-title">第4题：“小鸟”的“鸟”拼音是？</div>
+                <div class="options">
+                    <div class="option-item" data-answer="false">A. niǎo</div>
+                    <div class="option-item" data-answer="true">B. niǎo（正确书写，同A，此处为示例，实际可调整）</div>
+                    <div class="option-item" data-answer="false">C. nǎo</div>
+                    <div class="option-item" data-answer="false">D. niāo</div>
+                </div>
+                <div class="btn-area">
+                    <button class="next-btn">下一题 →</button>
+                </div>
+            </div>
+
+            <!-- 第5题 -->
+            <div class="question-area" data-index="4">
+                <div class="question-title">第5题：“a、o、e”属于什么韵母？</div>
+                <div class="options">
+                    <div class="option-item" data-answer="true">A. 单韵母</div>
+                    <div class="option-item" data-answer="false">B. 复韵母</div>
+                    <div class="option-item" data-answer="false">C. 鼻韵母</div>
+                    <div class="option-item" data-answer="false">D. 特殊韵母</div>
+                </div>
+                <div class="btn-area">
+                    <button class="next-btn">下一题 →</button>
+                </div>
+            </div>
+
+            <!-- 第6题 -->
+            <div class="question-area" data-index="5">
+                <div class="question-title">第6题：“天”的拼音是？</div>
+                <div class="options">
+                    <div class="option-item" data-answer="false">A. tiān</div>
+                    <div class="option-item" data-answer="true">B. tiān（正确书写，此处为示例）</div>
+                    <div class="option-item" data-answer="false">C. tiǎn</div>
+                    <div class="option-item" data-answer="false">D. tiàn</div>
+                </div>
+                <div class="btn-area">
+                    <button class="next-btn">下一题 →</button>
+                </div>
+            </div>
+
+            <!-- 第7题 -->
+            <div class="question-area" data-index="6">
+                <div class="question-title">第7题：下列哪个是“h”的正确写法？</div>
+                <div class="options">
+                    <div class="option-item" data-answer="true">A. 竖弯加竖</div>
+                    <div class="option-item" data-answer="false">B. 半圆加竖</div>
+                    <div class="option-item" data-answer="false">C. 两笔写成横折</div>
+                    <div class="option-item" data-answer="false">D. 一笔写成弯钩</div>
+                </div>
+                <div class="btn-area">
+                    <button class="next-btn">下一题 →</button>
+                </div>
+            </div>
+
+            <!-- 第8题 -->
+            <div class="question-area" data-index="7">
+                <div class="question-title">第8题：“ei”是？</div>
+                <div class="options">
+                    <div class="option-item" data-answer="false">A. 单韵母</div>
+                    <div class="option-item" data-answer="true">B. 复韵母</div>
+                    <div class="option-item" data-answer="false">C. 鼻韵母</div>
+                    <div class="option-item" data-answer="false">D. 声母</div>
+                </div>
+                <div class="btn-area">
+                    <button class="next-btn">下一题 →</button>
+                </div>
+            </div>
+
+            <!-- 第9题 -->
+            <div class="question-area" data-index="8">
+                <div class="question-title">第9题：“老师”的“师”拼音是？</div>
+                <div class="options">
+                    <div class="option-item" data-answer="false">A. sī</div>
+                    <div class="option-item" data-answer="true">B. shī</div>
+                    <div class="option-item" data-answer="false">C. shǐ</div>
+                    <div class="option-item" data-answer="false">D. shì</div>
+                </div>
+                <div class="btn-area">
+                    <button class="next-btn">下一题 →</button>
+                </div>
+            </div>
+
+            <!-- 第10题 -->
+            <div class="question-area" data-index="9">
+                <div class="question-title">第10题：“月亮”的“月”拼音是？</div>
+                <div class="options">
+                    <div class="option-item" data-answer="false">A. yuè</div>
+                    <div class="option-item" data-answer="true">B. yuè（正确书写，此处为示例）</div>
+                    <div class="option-item" data-answer="false">C. yùe</div>
+                    <div class="option-item" data-answer="false">D. yuē</div>
+                </div>
+                <div class="btn-area">
+                    <button class="next-btn">查看成绩 →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果区域 -->
+        <div class="result-area">
+            <div class="result-title">🎉 闯关完成！🎉</div>
+            <div class="score-info">你的得分：<span id="total-score">0</span> / 100 分</div>
+            <div class="answer-list" id="answer-list">
+                <!-- 正确答案和解析将通过JS动态生成 -->
+            </div>
+            <button class="restart-btn">重新闯关</button>
+        </div>
+    </div>
+
     <script>
-        // 题目数据（按顺序排列）
-        const questions = [
+        // 拼音题目正确答案与解析数据
+        const questionData = [
             {
-                id: 1,
-                title: "基于江西师范大学教育技术专业培养方案，当前四年制本科学生培养目标的核心是：",
-                options: [
-                    "A. 能够找到工作",
-                    "B. 能够不断自主学习提升自己，辨别数字真伪，思辨各类教育相关问题",
-                    "C. 能够走入社会",
-                    "D. 能够胜任中学信息科技学科课程的骨干教师"
-                ],
-                answer: "B",
-                explanation: "我校“教育技术专业培养方案”明确规定核心培养目标包括自主学习能力、数字真伪辨别能力、思辨能力等，而非单纯的就业、社会适应或学科教学能力。"
+                title: "第1题：下列哪个是“b”的正确读音？",
+                correctAnswer: "B. 播（bō）",
+                analysis: "“b”是双唇不送气清塞音，读音为“播（bō）”，对应选项B。选项A是“o”的读音，选项C是“f”的读音，选项D是“d”的读音。"
             },
             {
-                id: 2,
-                title: "教育技术专业在当前数字人工智能时代背景下的地位是：",
-                options: [
-                    "A. 教育学一级学科中，最具时代重要性的二级学科、专业",
-                    "B. 国外重视、国内尚不重视",
-                    "C. 国外尚不重视、国内重视",
-                    "D. 国外尚不重视、国内尚不重视"
-                ],
-                answer: "C",
-                explanation: "二十大、《人民日报》、教育部课标等多项国家政策均强调教育数字化和人工智能教育的重要性，国内高度重视；而国外相关领域发展路径不同，尚未形成同等重视程度。"
+                title: "第2题：“苹果”的“苹”拼音是？",
+                correctAnswer: "B. píng",
+                analysis: "“苹”是第二声，拼音为píng，注意不要写成第三声pǐn或第一声pīn哦。"
             },
             {
-                id: 3,
-                title: "如下的教育技术定义中，最具备当前数字人工智能工程涵义的是：",
-                options: [
-                    "A. AECT1994年定义：教学技术是为了促进学习，对有关的过程和资源进行设计、开发、利用、管理和评价的理论与实践",
-                    "B. AECT2005定义：教育技术是指通过创建、运用和管理适当的技术过程和资源来促进学习和提升绩效的研究和符合职业道德规范的实践",
-                    "C. 教育技术（Educational Technology）是指通过理论与实践的方式，系统地设计、开发、运用、管理与评价教学资源和学习过程，以促进更有效的学习。它融合了教育学、心理学、信息技术等多个学科的知识，旨在优化教学效果和学习体验",
-                    "D. 教育技术就是教育中的技术运用"
-                ],
-                answer: "A",
-                explanation: "AECT1994年定义明确了教育技术的工程属性，包括设计、开发、利用、管理和评价等核心工程环节，与当前数字人工智能时代的工程实践需求高度契合。"
+                title: "第3题：下列哪个是翘舌音？",
+                correctAnswer: "C. zh",
+                analysis: "翘舌音包括zh、ch、sh、r，平舌音包括z、c、s，所以选项C是翘舌音。"
             },
             {
-                id: 4,
-                title: "教育技术专业作为教育+计算机的交叉学科专业，最好的解释是：",
-                options: [
-                    "A. 教育理论、计算机应用技术互为统一、互为促进、促进世界迭代向前发展",
-                    "B. 教育技术在教育领域注重教育原理贯通，计算机领域面向应用原理；计算机专业注重计算机原理贯通，教育领域面向应用原理",
-                    "C. 教育技术既可面向教育教学平台工程（编程开发），也可面向教育教学内容工程（媒体制作）",
-                    "D. 教育理论验证计算机应用技术",
-                    "E. 教育理论指导计算机技术"
-                ],
-                answer: "C",
-                explanation: "教育技术专业的交叉性体现在工程实践的双向发展：平台工程方向面向技术开发（适合男生），内容工程方向面向教学资源制作（适合女生），全面覆盖教育与计算机的交叉应用场景。"
+                title: "第4题：“小鸟”的“鸟”拼音是？",
+                correctAnswer: "A/B. niǎo",
+                analysis: "“鸟”是第三声，拼音为niǎo，注意声调标在“a”上哦。"
             },
             {
-                id: 5,
-                title: "即时教学互动、教学过程管理的较好工具是：",
-                options: [
-                    "A. QQ",
-                    "B. 腾讯会议",
-                    "C. 微信",
-                    "D. 钉钉"
-                ],
-                answer: "D",
-                explanation: "钉钉具备完善的教学互动功能（如签到、投票、作业提交）和过程管理工具（如班级群管理、教学数据统计），更适合教育场景的即时互动与管理需求。"
+                title: "第5题：“a、o、e”属于什么韵母？",
+                correctAnswer: "A. 单韵母",
+                analysis: "单韵母是由一个元音构成的韵母，共有a、o、e、i、u、ü 6个，所以“a、o、e”是单韵母。"
             },
             {
-                id: 6,
-                title: "Edge如何实现中英（Prompt）互译、朗读、集锦同步和网页放缩功能：",
-                options: [
-                    "A. Edge中安装中英翻译扩展。Edge内置了中英朗读功能。Edge内置了“集锦”功能。Edge内置了按住Ctrl键滚动鼠标的网页放缩功能",
-                    "B. Edge中内置朗读功能。Edge内置了“集锦”功能。Edge内置了按住Ctrl键滚动鼠标的网页放缩功能",
-                    "C. Edge只能朗读英文。Edge内置了“集锦”功能。Edge内置了按住Ctrl键滚动鼠标的网页放缩功能",
-                    "D. Edge可以朗读中英。Edge内置了“集锦”功能。Edge内置了按住Ctrl键滚动鼠标的网页放缩功能"
-                ],
-                answer: "A",
-                explanation: "Edge浏览器需通过安装翻译扩展实现中英互译，内置中英双语朗读功能、跨设备集锦同步功能，以及Ctrl+鼠标滚动的网页放缩功能，全面满足多设备协同学习需求。"
+                title: "第6题：“天”的拼音是？",
+                correctAnswer: "A/B. tiān",
+                analysis: "“天”是第一声，拼音为tiān，由声母“t”和复韵母“ian”组成。"
             },
             {
-                id: 7,
-                title: "免费发布网站的较好平台是：",
-                options: [
-                    "A. 阿里云盘",
-                    "B. 百度网盘",
-                    "C. Onedrive",
-                    "D. Github"
-                ],
-                answer: "D",
-                explanation: "Github提供免费的静态网站托管服务（Github Pages），支持自定义域名，适合教育技术专业学生发布教学网站、课程资源等内容，其他选项均为云存储服务，不具备网站发布功能。"
+                title: "第7题：下列哪个是“h”的正确写法？",
+                correctAnswer: "A. 竖弯加竖",
+                analysis: "“h”共2笔写成，第一笔是竖弯，第二笔是竖，不要和“b”“d”的写法混淆哦。"
             },
             {
-                id: 8,
-                title: "免费的较好网盘云盘是：",
-                options: [
-                    "A. 阿里云盘",
-                    "B. 百度网盘",
-                    "C. Onedrive",
-                    "D. Github"
-                ],
-                answer: "A",
-                explanation: "阿里云盘提供较大的免费存储空间、较快的上传下载速度，且无强制限速政策，适合存储教学视频、课件等大文件，是教育场景下的优选云存储工具。"
+                title: "第8题：“ei”是？",
+                correctAnswer: "B. 复韵母",
+                analysis: "复韵母是由两个或三个元音结合而成的韵母，“ei”由“e”和“i”组成，属于复韵母。"
             },
             {
-                id: 9,
-                title: "免费的知识发表网站是：",
-                options: [
-                    "A. 知乎",
-                    "B. 微信朋友圈",
-                    "C. 钉钉我的动态",
-                    "D. 淘宝"
-                ],
-                answer: "A",
-                explanation: "知乎是专注于知识分享、学术讨论的平台，支持免费发布专业文章、教学经验、学术观点等内容，适合教育技术专业学生进行知识传播和交流。"
+                title: "第9题：“老师”的“师”拼音是？",
+                correctAnswer: "B. shī",
+                analysis: "“师”是翘舌音，拼音为shī（第一声），不要写成平舌音sī哦。"
             },
             {
-                id: 10,
-                title: "以下哪项与教育技术主线（线性辅助←树体主导→网状辅助）最不相关：",
-                options: [
-                    "A. 教育大模型相关的思维语言框架与迭代",
-                    "B. 经典哲学视角下的思维语言分类与迭代",
-                    "C. 人脑、计算机、自然界的思维语言统一框架",
-                    "D. 教育技术的知识是一个网，纷繁复杂、杂乱无章"
-                ],
-                answer: "D",
-                explanation: "教育技术的知识体系是有主线（树体主导）、有辅助（线性+网状）的结构化体系，而非杂乱无章的网络。其他选项均围绕思维语言的结构化框架展开，与教育技术主线高度相关。"
+                title: "第10题：“月亮”的“月”拼音是？",
+                correctAnswer: "A/B. yuè",
+                analysis: "“月”是整体认读音节，拼音为yuè（第四声），注意不要写错成yùe哦。"
             }
         ];
 
-        // 全局状态
-        let currentQuestionIndex = 0;
+        // 获取DOM元素
+        const questionAreas = document.querySelectorAll('.question-area');
+        const optionItems = document.querySelectorAll('.option-item');
+        const nextBtns = document.querySelectorAll('.next-btn');
+        const resultArea = document.querySelector('.result-area');
+        const totalScore = document.querySelector('#total-score');
+        const answerList = document.querySelector('#answer-list');
+        const restartBtn = document.querySelector('.restart-btn');
+
+        // 记录用户答题情况
         let userAnswers = [];
-        let score = 0;
-    </script>
-</head>
-<body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen font-sans">
-    <!-- 导航栏 -->
-    <nav class="bg-white shadow-md fixed w-full top-0 z-50">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <<i class="fa fa-book text-blue-600 text-2xl"></</i>
-                <h1 class="text-xl md:text-2xl font-bold text-gray-800">智能拼音教学平台</h1>
-            </div>
-            <div class="flex items-center space-x-4">
-                <a href="https://www.doubao.com/" target="_blank" class="hidden md:flex items-center text-blue-600 hover:text-blue-800 transition-colors">
-                    <<i class="fa fa-robot mr-2"></</i>
-                    <span>豆包AIGC</span>
-                </a>
-                <a href="https://qianwen.aliyun.com/" target="_blank" class="hidden md:flex items-center text-blue-600 hover:text-blue-800 transition-colors">
-                    <<i class="fa fa-cloud mr-2"></</i>
-                    <span>千问AIGC</span>
-                </a>
-                <button id="voiceBtn" class="bg-blue-600 text-white px-3 py-1 rounded-full flex items-center hover:bg-blue-700 transition-colors">
-                    <<i class="fa fa-volume-up mr-1"></</i>
-                    <span>语音朗读</span>
-                </button>
-            </div>
-        </div>
-    </nav>
+        let currentQuestionIndex = 0;
 
-    <!-- 主内容区 -->
-    <main class="container mx-auto px-4 pt-24 pb-16">
-        <!-- 答题区域 -->
-        <section id="quizSection" class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8 transform transition-all duration-300 hover:shadow-xl">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl md:text-2xl font-bold text-gray-800">
-                    第 <span id="currentQuestionNum">1</span> 题 / 共 10 题
-                </h2>
-                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                    10 分
-                </span>
-            </div>
-
-            <div id="questionContainer" class="mb-8">
-                <p id="questionTitle" class="text-lg md:text-xl text-gray-700 mb-6 leading-relaxed"></p>
-                <div id="optionsContainer" class="grid gap-4"></div>
-            </div>
-
-            <div class="flex justify-between">
-                <button id="prevBtn" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                    <<i class="fa fa-arrow-left mr-2"></</i>上一题
-                </button>
-                <button id="nextBtn" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
-                    下一题<i class="fa fa-arrow-right ml-2"></</i>
-                </button>
-            </div>
-        </section>
-
-        <!-- 拼音学习工具区 -->
-        <section class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-8">
-            <h2 class="text-xl md:text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                <<i class="fa fa-pencil-square-o text-blue-600 mr-3"></</i>
-                拼音学习工具
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-blue-50 rounded-xl p-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">拼音发音练习</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center">
-                            <input type="text" id="pinyinInput" placeholder="输入拼音（如：bā）" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <button id="readPinyinBtn" class="ml-3 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                                <<i class="fa fa-volume-up mr-1"></</i> 朗读
-                            </button>
-                        </div>
-                        <div class="flex flex-wrap gap-2">
-                            <button class="pinyin-btn bg-blue-100 text-blue-800 px-3 py-1 rounded-lg hover:bg-blue-200 transition-colors">bā</button>
-                            <button class="pinyin-btn bg-blue-100 text-blue-800 px-3 py-1 rounded-lg hover:bg-blue-200 transition-colors">mā</button>
-                            <button class="pinyin-btn bg-blue-100 text-blue-800 px-3 py-1 rounded-lg hover:bg-blue-200 transition-colors">fā</button>
-                            <button class="pinyin-btn bg-blue-100 text-blue-800 px-3 py-1 rounded-lg hover:bg-blue-200 transition-colors">dā</button>
-                            <button class="pinyin-btn bg-blue-100 text-blue-800 px-3 py-1 rounded-lg hover:bg-blue-200 transition-colors">tā</button>
-                            <button class="pinyin-btn bg-blue-100 text-blue-800 px-3 py-1 rounded-lg hover:bg-blue-200 transition-colors">nā</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-purple-50 rounded-xl p-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">AIGC辅助学习</h3>
-                    <div class="space-y-4">
-                        <p class="text-gray-700">使用以下AIGC工具获取拼音学习资料：</p>
-                        <div class="flex flex-col space-y-3">
-                            <a href="https://www.doubao.com/" target="_blank" class="flex items-center bg-white border border-gray-300 rounded-lg px-4 py-3 hover:shadow-md transition-shadow">
-                                <<i class="fa fa-robot text-blue-600 text-xl mr-3"></</i>
-                                <div>
-                                    <div class="font-medium text-gray-800">豆包AIGC</div>
-                                    <div class="text-sm text-gray-500">生成拼音教学课件、练习题</div>
-                                </div>
-                            </a>
-                            <a href="https://qianwen.aliyun.com/" target="_blank" class="flex items-center bg-white border border-gray-300 rounded-lg px-4 py-3 hover:shadow-md transition-shadow">
-                                <<i class="fa fa-cloud text-purple-600 text-xl mr-3"></</i>
-                                <div>
-                                    <div class="font-medium text-gray-800">千问AIGC</div>
-                                    <div class="text-sm text-gray-500">获取拼音发音指导、学习计划</div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 成绩结果区（初始隐藏） -->
-        <section id="resultSection" class="bg-white rounded-2xl shadow-lg p-6 md:p-8 hidden">
-            <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-green-100 mb-4">
-                    <<i class="fa fa-trophy text-green-600 text-4xl"></</i>
-                </div>
-                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">答题完成！</h2>
-                <p class="text-xl text-gray-600">您的得分：<span id="finalScore" class="text-green-600 font-bold">0</span> / 100 分</p>
-            </div>
-
-            <div class="mb-8">
-                <h3 class="text-xl font-semibold text-gray-800 mb-4">答案解析</h3>
-                <div id="explanationsContainer" class="space-y-6">
-                    <!-- 解析内容将动态生成 -->
-                </div>
-            </div>
-
-            <div class="text-center">
-                <button id="restartBtn" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors text-lg">
-                    重新答题
-                </button>
-            </div>
-        </section>
-    </main>
-
-    <!-- 页脚 -->
-    <footer class="bg-gray-800 text-white py-8">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-4 md:mb-0">
-                    <div class="flex items-center space-x-2">
-                        <<i class="fa fa-book text-blue-400 text-xl"></</i>
-                        <span class="text-xl font-bold">智能拼音教学平台</span>
-                    </div>
-                    <p class="text-gray-400 mt-2">© 2025 版权所有</p>
-                </div>
-                <div class="flex space-x-6">
-                    <a href="https://www.doubao.com/" target="_blank" class="text-gray-300 hover:text-white transition-colors">
-                        <<i class="fa fa-robot text-xl"></</i>
-                    </a>
-                    <a href="https://qianwen.aliyun.com/" target="_blank" class="text-gray-300 hover:text-white transition-colors">
-                        <<i class="fa fa-cloud text-xl"></</i>
-                    </a>
-                    <a href="#" class="text-gray-300 hover:text-white transition-colors">
-                        <<i class="fa fa-question-circle text-xl"></</i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // 初始化页面
-        document.addEventListener('DOMContentLoaded', function() {
-            // 加载当前题目
-            loadCurrentQuestion();
-            
-            // 事件监听
-            document.getElementById('nextBtn').addEventListener('click', handleNext);
-            document.getElementById('prevBtn').addEventListener('click', handlePrev);
-            document.getElementById('restartBtn').addEventListener('click', restartQuiz);
-            document.getElementById('voiceBtn').addEventListener('click', readCurrentQuestion);
-            document.getElementById('readPinyinBtn').addEventListener('click', readPinyin);
-            
-            // 拼音按钮点击事件
-            document.querySelectorAll('.pinyin-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.getElementById('pinyinInput').value = this.textContent;
-                    readPinyin();
+        // 选项点击事件：选中选项并显示下一题按钮
+        optionItems.forEach(option => {
+            option.addEventListener('click', function() {
+                // 移除当前题目的所有选项选中状态
+                const parentOptions = this.parentElement;
+                parentOptions.querySelectorAll('.option-item').forEach(item => {
+                    item.classList.remove('selected');
                 });
+                // 给当前选项添加选中状态
+                this.classList.add('selected');
+                // 记录用户答案
+                const questionIndex = this.closest('.question-area').dataset.index;
+                userAnswers[questionIndex] = {
+                    selected: this.textContent,
+                    isCorrect: this.dataset.answer === 'true'
+                };
+                // 显示下一题按钮
+                const nextBtn = this.closest('.question-area').querySelector('.next-btn');
+                nextBtn.style.display = 'inline-block';
             });
         });
 
-        // 加载当前题目
-        function loadCurrentQuestion() {
-            const question = questions[currentQuestionIndex];
-            
-            // 更新题目信息
-            document.getElementById('currentQuestionNum').textContent = question.id;
-            document.getElementById('questionTitle').textContent = question.title;
-            
-            // 清空选项容器
-            const optionsContainer = document.getElementById('optionsContainer');
-            optionsContainer.innerHTML = '';
-            
-            // 生成选项
-            question.options.forEach(option => {
-                const optionElement = document.createElement('div');
-                optionElement.className = `flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
-                    userAnswers[currentQuestionIndex] === option.charAt(0) ? 'border-blue-600 bg-blue-50' : 'border-gray-300 hover:bg-gray-50'
-                }`;
-                optionElement.innerHTML = `
-                    <input type="radio" name="question${question.id}" id="option${option.charAt(0)}" value="${option.charAt(0)}" 
-                        class="mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        ${userAnswers[currentQuestionIndex] === option.charAt(0) ? 'checked' : ''}>
-                    <label for="option${option.charAt(0)}" class="flex-1 cursor-pointer text-gray-700">${option}</label>
-                `;
-                
-                // 选项点击事件
-                optionElement.addEventListener('click', function() {
-                    document.querySelectorAll(`input[name="question${question.id}"]`).forEach(input => {
-                        input.checked = false;
-                        input.parentElement.classList.remove('border-blue-600', 'bg-blue-50');
-                        input.parentElement.classList.add('border-gray-300', 'hover:bg-gray-50');
-                    });
-                    
-                    const radio = this.querySelector('input');
-                    radio.checked = true;
-                    this.classList.remove('border-gray-300', 'hover:bg-gray-50');
-                    this.classList.add('border-blue-600', 'bg-blue-50');
-                    
-                    // 保存答案
-                    userAnswers[currentQuestionIndex] = radio.value;
-                });
-                
-                optionsContainer.appendChild(optionElement);
+        // 下一题按钮点击事件
+        nextBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const currentQuestion = this.closest('.question-area');
+                const currentIndex = parseInt(currentQuestion.dataset.index);
+                // 隐藏当前题目
+                currentQuestion.classList.remove('active');
+                // 如果不是最后一题，显示下一题
+                if (currentIndex < questionAreas.length - 1) {
+                    currentQuestionIndex = currentIndex + 1;
+                    questionAreas[currentQuestionIndex].classList.add('active');
+                } else {
+                    // 最后一题，显示成绩
+                    showResult();
+                }
             });
-            
-            // 更新按钮状态
-            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
-            document.getElementById('nextBtn').textContent = currentQuestionIndex === questions.length - 1 ? '查看结果' : '下一题<i class="fa fa-arrow-right ml-2"></</i>';
-        }
+        });
 
-        // 处理下一题
-        function handleNext() {
-            // 检查是否已答题
-            if (!userAnswers[currentQuestionIndex] && currentQuestionIndex < questions.length - 1) {
-                alert('请选择一个答案后再继续！');
-                return;
-            }
-            
-            // 如果是最后一题，显示结果
-            if (currentQuestionIndex === questions.length - 1) {
-                calculateScore();
-                showResult();
-                return;
-            }
-            
-            // 切换到下一题
-            currentQuestionIndex++;
-            loadCurrentQuestion();
-            
-            // 滚动到顶部
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // 处理上一题
-        function handlePrev() {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                loadCurrentQuestion();
-                
-                // 滚动到顶部
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        }
-
-        // 计算分数
-        function calculateScore() {
-            score = 0;
-            questions.forEach((question, index) => {
-                if (userAnswers[index] === question.answer) {
+        // 显示成绩和正确答案解析
+        function showResult() {
+            // 计算总分
+            let score = 0;
+            userAnswers.forEach(answer => {
+                if (answer && answer.isCorrect) {
                     score += 10;
                 }
             });
-        }
+            totalScore.textContent = score;
 
-        // 显示结果
-        function showResult() {
-            // 隐藏答题区域，显示结果区域
-            document.getElementById('quizSection').classList.add('hidden');
-            document.getElementById('resultSection').classList.remove('hidden');
-            
-            // 更新分数
-            document.getElementById('finalScore').textContent = score;
-            
-            // 生成答案解析
-            const explanationsContainer = document.getElementById('explanationsContainer');
-            explanationsContainer.innerHTML = '';
-            
-            questions.forEach((question, index) => {
-                const isCorrect = userAnswers[index] === question.answer;
-                const explanationElement = document.createElement('div');
-                explanationElement.className = `p-4 border rounded-lg ${isCorrect ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`;
-                explanationElement.innerHTML = `
-                    <div class="flex justify-between items-start mb-2">
-                        <h4 class="font-semibold text-gray-800">第 ${question.id} 题：${question.title}</h4>
-                        <span class="px-2 py-1 rounded text-xs font-medium ${isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                            ${isCorrect ? '正确' : '错误'}
-                        </span>
-                    </div>
-                    <div class="mb-2">
-                        <span class="text-sm text-gray-600">你的答案：</span>
-                        <span class="font-medium ${isCorrect ? 'text-green-600' : 'text-red-600'}">${userAnswers[index] || '未作答'}</span>
-                    </div>
-                    <div class="mb-2">
-                        <span class="text-sm text-gray-600">正确答案：</span>
-                        <span class="font-medium text-green-600">${question.answer}</span>
-                    </div>
-                    <div>
-                        <span class="text-sm text-gray-600">解析：</span>
-                        <span class="text-gray-700">${question.explanation}</span>
-                    </div>
+            // 生成正确答案和解析列表
+            answerList.innerHTML = '';
+            questionData.forEach((data, index) => {
+                const answerItem = document.createElement('div');
+                answerItem.className = 'answer-item';
+                answerItem.innerHTML = `
+                    <div class="answer-question">${data.title}</div>
+                    <div class="answer-correct">正确答案：${data.correctAnswer}</div>
+                    <div class="answer-analysis">解析：${data.analysis}</div>
                 `;
-                explanationsContainer.appendChild(explanationElement);
+                answerList.appendChild(answerItem);
             });
+
+            // 显示结果区域
+            resultArea.style.display = 'block';
         }
 
-        // 重新答题
-        function restartQuiz() {
-            currentQuestionIndex = 0;
+        // 重新闯关按钮事件
+        restartBtn.addEventListener('click', function() {
+            // 重置答题记录
             userAnswers = [];
-            score = 0;
-            
-            // 显示答题区域，隐藏结果区域
-            document.getElementById('resultSection').classList.add('hidden');
-            document.getElementById('quizSection').classList.remove('hidden');
-            
-            // 加载第一题
-            loadCurrentQuestion();
-            
-            // 滚动到顶部
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // 朗读当前题目
-        function readCurrentQuestion() {
-            const question = questions[currentQuestionIndex];
-            const text = `${question.title}。选项：${question.options.join('。')}`;
-            
-            // 使用浏览器语音合成API
-            if ('speechSynthesis' in window) {
-                speechSynthesis.cancel(); // 取消之前的朗读
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'zh-CN';
-                utterance.rate = 0.9;
-                speechSynthesis.speak(utterance);
-            } else {
-                alert('您的浏览器不支持语音朗读功能');
-            }
-        }
-
-        // 朗读拼音
-        function readPinyin() {
-            const pinyin = document.getElementById('pinyinInput').value.trim();
-            if (!pinyin) {
-                alert('请输入拼音后再朗读');
-                return;
-            }
-            
-            // 使用浏览器语音合成API
-            if ('speechSynthesis' in window) {
-                speechSynthesis.cancel(); // 取消之前的朗读
-                const utterance = new SpeechSynthesisUtterance(pinyin);
-                utterance.lang = 'zh-CN';
-                utterance.rate = 0.7;
-                speechSynthesis.speak(utterance);
-            } else {
-                alert('您的浏览器不支持语音朗读功能');
-            }
-        }
+            currentQuestionIndex = 0;
+            // 隐藏结果区域
+            resultArea.style.display = 'none';
+            // 重置所有题目和选项
+            questionAreas.forEach((area, index) => {
+                area.classList.remove('active');
+                if (index === 0) {
+                    area.classList.add('active');
+                }
+                // 移除选项选中状态并隐藏下一题按钮
+                const options = area.querySelectorAll('.option-item');
+                options.forEach(item => {
+                    item.classList.remove('selected');
+                });
+                area.querySelector('.next-btn').style.display = 'none';
+            });
+        });
     </script>
 </body>
 </html>
