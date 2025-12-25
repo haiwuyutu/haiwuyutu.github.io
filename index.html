@@ -554,3 +554,1318 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小朋友拼音学习乐园 - 完整版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", "幼圆", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f8ff;
+            color: #333;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            color: #ff6b81;
+            font-size: 2.3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* 导航标签 */
+        .tab-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: #f8f9fa;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .tab-btn.active {
+            background-color: #ff9800;
+            color: #fff;
+        }
+
+        .tab-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .tab-btn.active:hover {
+            background-color: #e68900;
+        }
+
+        /* 标签内容区域 */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* AIGC链接区域 */
+        .aigc-link {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border: 2px dashed #4ecdc4;
+        }
+
+        .aigc-link p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .aigc-link a {
+            color: #2a9d8f;
+            font-size: 1.1rem;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .aigc-link a:hover {
+            text-decoration: underline;
+            color: #21867a;
+        }
+
+        /* 拼音认知区域 */
+        .pinyin-learn {
+            background-color: #fef5e7;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .learn-title {
+            font-size: 1.5rem;
+            color: #e74c3c;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .pinyin-categories {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            background-color: #fff;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-btn.active {
+            border-color: #28a745;
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .pinyin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .pinyin-item {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .pinyin-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .pinyin-char {
+            font-size: 1.8rem;
+            color: #ff6b81;
+            margin-bottom: 5px;
+        }
+
+        .pinyin-pronounce {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .pinyin-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .audio-btn {
+            background-color: #4285f4;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .audio-btn:hover {
+            background-color: #3367d6;
+        }
+
+        .record-btn {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .record-btn.recording {
+            background-color: #c0392b;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(231, 76, 60, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(231, 76, 60, 0);
+            }
+        }
+
+        /* 答题区域 */
+        .question-area {
+            background-color: #fef5e7;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .question-area.active {
+            display: block;
+        }
+
+        .question-title {
+            font-size: 1.5rem;
+            color: #e74c3c;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-item {
+            background-color: #fff;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-item:hover {
+            border-color: #ffc107;
+            background-color: #fff8e1;
+        }
+
+        .option-item.selected {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+
+        .btn-area {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .next-btn {
+            background-color: #ff9800;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .next-btn:hover {
+            background-color: #e68900;
+            transform: translateY(-2px);
+        }
+
+        /* 结果区域 */
+        .result-area {
+            background-color: #e8f5e9;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result-title {
+            font-size: 2rem;
+            color: #27ae60;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .score-info {
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .answer-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .answer-item {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .answer-question {
+            font-size: 1.2rem;
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+
+        .answer-correct {
+            font-size: 1.1rem;
+            color: #28a745;
+            margin-bottom: 8px;
+        }
+
+        .answer-analysis {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .restart-btn {
+            background-color: #4285f4;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 30px auto 0;
+            display: block;
+        }
+
+        .restart-btn:hover {
+            background-color: #3367d6;
+            transform: translateY(-2px);
+        }
+
+        /* 学习进度区域 */
+        .progress-area {
+            background-color: #e3f2fd;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .progress-title {
+            font-size: 1.5rem;
+            color: #1976d2;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .progress-card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .progress-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .progress-label {
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #4caf50;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-value {
+            font-size: 1rem;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .pinyin-mastery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .mastery-item {
+            text-align: center;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .mastery-name {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .mastery-level {
+            font-size: 0.9rem;
+            color: #4caf50;
+        }
+
+        /* 录音提示 */
+        .record-tip {
+            text-align: center;
+            margin-top: 10px;
+            color: #e74c3c;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .record-tip.show {
+            display: block;
+        }
+
+        /* 适配移动端 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+                margin: 10px auto;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .learn-title, .question-title, .result-title {
+                font-size: 1.3rem;
+            }
+
+            .pinyin-char {
+                font-size: 1.5rem;
+            }
+
+            .option-item, .score-info {
+                font-size: 1rem;
+            }
+
+            .tab-nav {
+                gap: 5px;
+            }
+
+            .tab-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+
+            .audio-btn, .record-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部标题 -->
+        <div class="header">
+            <h1>🐼 拼音小达人学习乐园 🐼</h1>
+            <p>认识拼音+答题闯关+录音跟读，轻松学好拼音！</p>
+        </div>
+
+        <!-- 导航标签 -->
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="pinyin-learn-tab">拼音认知</button>
+            <button class="tab-btn" data-tab="quiz-tab">答题闯关</button>
+            <button class="tab-btn" data-tab="progress-tab">学习进度</button>
+        </div>
+
+        <!-- 1. 拼音认知标签内容 -->
+        <div class="tab-content active" id="pinyin-learn-tab">
+            <!-- AIGC链接 -->
+            <div class="aigc-link">
+                <p>遇到拼音难题？AIGC来帮你：</p>
+                <a href="https://www.doubao.com" target="_blank">豆包AIGC - 拼音学习小助手</a>
+                <a href="https://ai.baidu.com" target="_blank" style="margin-left: 15px;">百度AIGC - 拼音发音指导</a>
+            </div>
+
+            <div class="pinyin-learn">
+                <div class="learn-title">📚 拼音字母认知</div>
+                <div class="pinyin-categories">
+                    <button class="category-btn active" data-category="shengmu">声母</button>
+                    <button class="category-btn" data-category="yunmu">韵母</button>
+                    <button class="category-btn" data-category="zhiyin">整体认读音节</button>
+                </div>
+
+                <!-- 拼音展示网格 -->
+                <div class="pinyin-grid" id="pinyin-grid">
+                    <!-- 动态生成拼音内容 -->
+                </div>
+
+                <!-- 音频控制按钮 -->
+                <div class="pinyin-controls">
+                    <button class="audio-btn" id="read-all-btn">
+                        🗣️ 朗读当前所有拼音
+                    </button>
+                    <button class="audio-btn" id="read-selected-btn">
+                        🗣️ 朗读选中拼音
+                    </button>
+                    <button class="record-btn" id="record-btn">
+                        🎤 录音跟读
+                    </button>
+                </div>
+                <div class="record-tip" id="record-tip">
+                    正在录音...点击按钮结束录音
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 答题闯关标签内容 -->
+        <div class="tab-content" id="quiz-tab">
+            <!-- AIGC链接 -->
+            <div class="aigc-link">
+                <p>答题遇到困难？AIGC帮你解析：</p>
+                <a href="https://www.doubao.com" target="_blank">豆包AIGC - 拼音题目解析</a>
+            </div>
+
+            <!-- 题目容器 -->
+            <div class="question-container">
+                <!-- 第1题 -->
+                <div class="question-area active" data-index="0">
+                    <div class="question-title">第1题：下列哪个是“b”的正确读音？</div>
+                    <div class="options">
+                        <div class="option-item" data-answer="false">A. 波（ō）</div>
+                        <div class="option-item" data-answer="true">B. 播（bō）</div>
+                        <div class="option-item" data-answer="false">C. 佛（fó）</div>
+                        <div class="option-item" data-answer="false">D. 德（dé）</div>
+                    </div>
+                    <div class="btn-area">
+                        <button class="next-btn">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 第2题 -->
+                <div class="question-area" data-index="1">
+                    <div class="question-title">第2题：“苹果”的“苹”拼音是？</div>
+                    <div class="options">
+                        <div class="option-item" data-answer="false">A. pǐn</div>
+                        <div class="option-item" data-answer="true">B. píng</div>
+                        <div class="option-item" data-answer="false">C. pīn</div>
+                        <div class="option-item" data-answer="false">D. pìng</div>
+                    </div>
+                    <div class="btn-area">
+                        <button class="next-btn">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 第3题 -->
+                <div class="question-area" data-index="2">
+                    <div class="question-title">第3题：下列哪个是翘舌音？</div>
+                    <div class="options">
+                        <div class="option-item" data-answer="false">A. z</div>
+                        <div class="option-item" data-answer="false">B. c</div>
+                        <div class="option-item" data-answer="true">C. zh</div>
+                        <div class="option-item" data-answer="false">D. s</div>
+                    </div>
+                    <div class="btn-area">
+                        <button class="next-btn">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 第4题 -->
+                <div class="question-area" data-index="3">
+                    <div class="question-title">第4题：“小鸟”的“鸟”拼音是？</div>
+                    <div class="options">
+                        <div class="option-item" data-answer="true">A. niǎo</div>
+                        <div class="option-item" data-answer="false">B. niāo</div>
+                        <div class="option-item" data-answer="false">C. nǎo</div>
+                        <div class="option-item" data-answer="false">D. niào</div>
+                    </div>
+                    <div class="btn-area">
+                        <button class="next-btn">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 第5题 -->
+                <div class="question-area" data-index="4">
+                    <div class="question-title">第5题：“a、o、e”属于什么韵母？</div>
+                    <div class="options">
+                        <div class="option-item" data-answer="true">A. 单韵母</div>
+                        <div class="option-item" data-answer="false">B. 复韵母</div>
+                        <div class="option-item" data-answer="false">C. 鼻韵母</div>
+                        <div class="option-item" data-answer="false">D. 特殊韵母</div>
+                    </div>
+                    <div class="btn-area">
+                        <button class="next-btn">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 第6题 -->
+                <div class="question-area" data-index="5">
+                    <div class="question-title">第6题：“天”的拼音是？</div>
+                    <div class="options">
+                        <div class="option-item" data-answer="true">A. tiān</div>
+                        <div class="option-item" data-answer="false">B. tiǎn</div>
+                        <div class="option-item" data-answer="false">C. tiàn</div>
+                        <div class="option-item" data-answer="false">D. tiān（错误格式）</div>
+                    </div>
+                    <div class="btn-area">
+                        <button class="next-btn">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 第7题 -->
+                <div class="question-area" data-index="6">
+                    <div class="question-title">第7题：下列哪个是“h”的正确写法？</div>
+                    <div class="options">
+                        <div class="option-item" data-answer="true">A. 竖弯加竖</div>
+                        <div class="option-item" data-answer="false">B. 半圆加竖</div>
+                        <div class="option-item" data-answer="false">C. 两笔写成横折</div>
+                        <div class="option-item" data-answer="false">D. 一笔写成弯钩</div>
+                    </div>
+                    <div class="btn-area">
+                        <button class="next-btn">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 第8题 -->
+                <div class="question-area" data-index="7">
+                    <div class="question-title">第8题：“ei”是？</div>
+                    <div class="options">
+                        <div class="option-item" data-answer="false">A. 单韵母</div>
+                        <div class="option-item" data-answer="true">B. 复韵母</div>
+                        <div class="option-item" data-answer="false">C. 鼻韵母</div>
+                        <div class="option-item" data-answer="false">D. 声母</div>
+                    </div>
+                    <div class="btn-area">
+                        <button class="next-btn">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 第9题 -->
+                <div class="question-area" data-index="8">
+                    <div class="question-title">第9题：“老师”的“师”拼音是？</div>
+                    <div class="options">
+                        <div class="option-item" data-answer="false">A. sī</div>
+                        <div class="option-item" data-answer="true">B. shī</div>
+                        <div class="option-item" data-answer="false">C. shǐ</div>
+                        <div class="option-item" data-answer="false">D. shì</div>
+                    </div>
+                    <div class="btn-area">
+                        <button class="next-btn">下一题 →</button>
+                    </div>
+                </div>
+
+                <!-- 第10题 -->
+                <div class="question-area" data-index="9">
+                    <div class="question-title">第10题：“月亮”的“月”拼音是？</div>
+                    <div class="options">
+                        <div class="option-item" data-answer="true">A. yuè</div>
+                        <div class="option-item" data-answer="false">B. yùe</div>
+                        <div class="option-item" data-answer="false">C. yuē</div>
+                        <div class="option-item" data-answer="false">D. yǔe</div>
+                    </div>
+                    <div class="btn-area">
+                        <button class="next-btn">查看成绩 →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 结果区域 -->
+            <div class="result-area" id="quiz-result">
+                <div class="result-title">🎉 闯关完成！🎉</div>
+                <div class="score-info">你的得分：<span id="total-score">0</span> / 100 分</div>
+                <div class="answer-list" id="answer-list">
+                    <!-- 正确答案和解析动态生成 -->
+                </div>
+                <button class="restart-btn" id="quiz-restart-btn">重新闯关</button>
+            </div>
+        </div>
+
+        <!-- 3. 学习进度标签内容 -->
+        <div class="tab-content" id="progress-tab">
+            <!-- AIGC链接 -->
+            <div class="aigc-link">
+                <p>想提升拼音水平？AIGC定制学习计划：</p>
+                <a href="https://qianwen.aliyun.com" target="_blank">千问AIGC - 拼音学习计划定制</a>
+            </div>
+
+            <div class="progress-area">
+                <div class="progress-title">📊 我的拼音学习进度</div>
+
+                <div class="progress-card">
+                    <div class="progress-item">
+                        <div class="progress-label">声母认知</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="shengmu-progress" style="width: 0%;"></div>
+                        </div>
+                        <div class="progress-value" id="shengmu-value">0%</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">韵母认知</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="yunmu-progress" style="width: 0%;"></div>
+                        </div>
+                        <div class="progress-value" id="yunmu-value">0%</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">整体认读音节认知</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="zhiyin-progress" style="width: 0%;"></div>
+                        </div>
+                        <div class="progress-value" id="zhiyin-value">0%</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">答题闯关总分</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="quiz-progress" style="width: 0%;"></div>
+                        </div>
+                        <div class="progress-value" id="quiz-value">0/100</div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">录音跟读次数</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="record-progress" style="width: 0%;"></div>
+                        </div>
+                        <div class="progress-value" id="record-value">0次</div>
+                    </div>
+                </div>
+
+                <div class="progress-title" style="margin-top: 30px; font-size: 1.3rem;">拼音掌握情况</div>
+                <div class="pinyin-mastery" id="mastery-list">
+                    <!-- 动态生成掌握情况 -->
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        // ---------------- 拼音数据定义 ----------------
+        const pinyinData = {
+            shengmu: [
+                { char: "b", pronounce: "播" },
+                { char: "p", pronounce: "坡" },
+                { char: "m", pronounce: "摸" },
+                { char: "f", pronounce: "佛" },
+                { char: "d", pronounce: "得" },
+                { char: "t", pronounce: "特" },
+                { char: "n", pronounce: "讷" },
+                { char: "l", pronounce: "勒" },
+                { char: "g", pronounce: "哥" },
+                { char: "k", pronounce: "科" },
+                { char: "h", pronounce: "喝" },
+                { char: "j", pronounce: "鸡" },
+                { char: "q", pronounce: "欺" },
+                { char: "x", pronounce: "西" },
+                { char: "zh", pronounce: "知" },
+                { char: "ch", pronounce: "吃" },
+                { char: "sh", pronounce: "师" },
+                { char: "r", pronounce: "日" },
+                { char: "z", pronounce: "资" },
+                { char: "c", pronounce: "雌" },
+                { char: "s", pronounce: "思" },
+                { char: "y", pronounce: "衣" },
+                { char: "w", pronounce: "乌" }
+            ],
+            yunmu: [
+                { char: "a", pronounce: "啊" },
+                { char: "o", pronounce: "喔" },
+                { char: "e", pronounce: "鹅" },
+                { char: "i", pronounce: "衣" },
+                { char: "u", pronounce: "乌" },
+                { char: "ü", pronounce: "鱼" },
+                { char: "ai", pronounce: "爱" },
+                { char: "ei", pronounce: "诶" },
+                { char: "ui", pronounce: "威" },
+                { char: "ao", pronounce: "奥" },
+                { char: "ou", pronounce: "欧" },
+                { char: "iu", pronounce: "优" },
+                { char: "ie", pronounce: "耶" },
+                { char: "üe", pronounce: "约" },
+                { char: "er", pronounce: "儿" },
+                { char: "an", pronounce: "安" },
+                { char: "en", pronounce: "恩" },
+                { char: "in", pronounce: "因" },
+                { char: "un", pronounce: "温" },
+                { char: "ün", pronounce: "晕" },
+                { char: "ang", pronounce: "昂" },
+                { char: "eng", pronounce: "亨" },
+                { char: "ing", pronounce: "英" },
+                { char: "ong", pronounce: "轰" }
+            ],
+            zhiyin: [
+                { char: "zhi", pronounce: "知" },
+                { char: "chi", pronounce: "吃" },
+                { char: "shi", pronounce: "师" },
+                { char: "ri", pronounce: "日" },
+                { char: "zi", pronounce: "资" },
+                { char: "ci", pronounce: "雌" },
+                { char: "si", pronounce: "思" },
+                { char: "yi", pronounce: "衣" },
+                { char: "wu", pronounce: "乌" },
+                { char: "yu", pronounce: "鱼" },
+                { char: "ye", pronounce: "耶" },
+                { char: "yue", pronounce: "约" },
+                { char: "yuan", pronounce: "冤" },
+                { char: "yin", pronounce: "因" },
+                { char: "yun", pronounce: "晕" },
+                { char: "ying", pronounce: "英" }
+            ]
+        };
+
+        // ---------------- 题目数据定义 ----------------
+        const questionData = [
+            {
+                title: "第1题：下列哪个是“b”的正确读音？",
+                correctAnswer: "B. 播（bō）",
+                analysis: "“b”是双唇不送气清塞音，读音为“播（bō）”，对应选项B。选项A是“o”的读音，选项C是“f”的读音，选项D是“d”的读音。"
+            },
+            {
+                title: "第2题：“苹果”的“苹”拼音是？",
+                correctAnswer: "B. píng",
+                analysis: "“苹”是第二声，拼音为píng，注意不要写成第三声pǐn或第一声pīn哦。"
+            },
+            {
+                title: "第3题：下列哪个是翘舌音？",
+                correctAnswer: "C. zh",
+                analysis: "翘舌音包括zh、ch、sh、r，平舌音包括z、c、s，所以选项C是翘舌音。"
+            },
+            {
+                title: "第4题：“小鸟”的“鸟”拼音是？",
+                correctAnswer: "A. niǎo",
+                analysis: "“鸟”是第三声，拼音为niǎo，注意声调标在“a”上哦。"
+            },
+            {
+                title: "第5题：“a、o、e”属于什么韵母？",
+                correctAnswer: "A. 单韵母",
+                analysis: "单韵母是由一个元音构成的韵母，共有a、o、e、i、u、ü 6个，所以“a、o、e”是单韵母。"
+            },
+            {
+                title: "第6题：“天”的拼音是？",
+                correctAnswer: "A. tiān",
+                analysis: "“天”是第一声，拼音为tiān，由声母“t”和复韵母“ian”组成。"
+            },
+            {
+                title: "第7题：下列哪个是“h”的正确写法？",
+                correctAnswer: "A. 竖弯加竖",
+                analysis: "“h”共2笔写成，第一笔是竖弯，第二笔是竖，不要和“b”“d”的写法混淆哦。"
+            },
+            {
+                title: "第8题：“ei”是？",
+                correctAnswer: "B. 复韵母",
+                analysis: "复韵母是由两个或三个元音结合而成的韵母，“ei”由“e”和“i”组成，属于复韵母。"
+            },
+            {
+                title: "第9题：“老师”的“师”拼音是？",
+                correctAnswer: "B. shī",
+                analysis: "“师”是翘舌音，拼音为shī（第一声），不要写成平舌音sī哦。"
+            },
+            {
+                title: "第10题：“月亮”的“月”拼音是？",
+                correctAnswer: "A. yuè",
+                analysis: "“月”是整体认读音节，拼音为yuè（第四声），注意不要写错成yùe哦。"
+            }
+        ];
+
+        // ---------------- 全局状态变量 ----------------
+        let currentPinyinCategory = "shengmu";
+        let selectedPinyin = null;
+        let userAnswers = [];
+        let currentQuestionIndex = 0;
+        let recording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+
+        // 学习进度数据
+        let progressData = {
+            shengmu: 0,
+            yunmu: 0,
+            zhiyin: 0,
+            quizScore: 0,
+            recordTimes: 0
+        };
+
+        // ---------------- DOM元素获取 ----------------
+        // 标签导航
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        // 拼音认知
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const pinyinGrid = document.getElementById('pinyin-grid');
+        const readAllBtn = document.getElementById('read-all-btn');
+        const readSelectedBtn = document.getElementById('read-selected-btn');
+        const recordBtn = document.getElementById('record-btn');
+        const recordTip = document.getElementById('record-tip');
+
+        // 答题闯关
+        const questionAreas = document.querySelectorAll('.question-area');
+        const optionItems = document.querySelectorAll('.option-item');
+        const nextBtns = document.querySelectorAll('.next-btn');
+        const quizResult = document.getElementById('quiz-result');
+        const totalScore = document.getElementById('total-score');
+        const answerList = document.getElementById('answer-list');
+        const quizRestartBtn = document.getElementById('quiz-restart-btn');
+
+        // 学习进度
+        const shengmuProgress = document.getElementById('shengmu-progress');
+        const shengmuValue = document.getElementById('shengmu-value');
+        const yunmuProgress = document.getElementById('yunmu-progress');
+        const yunmuValue = document.getElementById('yunmu-value');
+        const zhiyinProgress = document.getElementById('zhiyin-progress');
+        const zhiyinValue = document.getElementById('zhiyin-value');
+        const quizProgress = document.getElementById('quiz-progress');
+        const quizValue = document.getElementById('quiz-value');
+        const recordProgress = document.getElementById('record-progress');
+        const recordValue = document.getElementById('record-value');
+        const masteryList = document.getElementById('mastery-list');
+
+        // ---------------- 初始化函数 ----------------
+        function init() {
+            // 初始化拼音网格
+            renderPinyinGrid();
+            // 初始化进度显示
+            updateProgressDisplay();
+            // 初始化掌握情况
+            renderMasteryList();
+            // 绑定所有事件
+            bindEvents();
+        }
+
+        // ---------------- 事件绑定 ----------------
+        function bindEvents() {
+            // 标签导航切换
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetTab = this.dataset.tab;
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+
+            // 拼音分类切换
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    currentPinyinCategory = this.dataset.category;
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    renderPinyinGrid();
+                });
+            });
+
+            // 拼音项点击事件
+            pinyinGrid.addEventListener('click', function(e) {
+                const pinyinItem = e.target.closest('.pinyin-item');
+                if (pinyinItem) {
+                    // 移除之前选中的样式
+                    document.querySelectorAll('.pinyin-item').forEach(item => {
+                        item.style.backgroundColor = '#fff';
+                    });
+                    // 设置当前选中
+                    pinyinItem.style.backgroundColor = '#d4edda';
+                    selectedPinyin = {
+                        char: pinyinItem.dataset.char,
+                        pronounce: pinyinItem.dataset.pronounce
+                    };
+
+                    // 更新对应分类进度
+                    updateCategoryProgress(currentPinyinCategory);
+                }
+            });
+
+            // 朗读所有拼音
+            readAllBtn.addEventListener('click', function() {
+                const pinyins = pinyinData[currentPinyinCategory];
+                let text = '';
+                pinyins.forEach(p => {
+                    text += p.char + '，读作' + p.pronounce + '。';
+                });
+                speakText(text);
+            });
+
+            // 朗读选中拼音
+            readSelectedBtn.addEventListener('click', function() {
+                if (selectedPinyin) {
+                    const text = selectedPinyin.char + '，读作' + selectedPinyin.pronounce + '。';
+                    speakText(text);
+                } else {
+                    alert('请先选中一个拼音哦！');
+                }
+            });
+
+            // 录音跟读
+            recordBtn.addEventListener('click', async function() {
+                if (!recording) {
+                    // 开始录音
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        mediaRecorder = new MediaRecorder(stream);
+                        audioChunks = [];
+
+                        mediaRecorder.addEventListener('dataavailable', function(e) {
+                            audioChunks.push(e.data);
+                        });
+
+                        mediaRecorder.start();
+                        recording = true;
+                        this.classList.add('recording');
+                        recordTip.classList.add('show');
+
+                        // 录音结束后处理
+                        mediaRecorder.addEventListener('stop', function() {
+                            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                            const audioUrl = URL.createObjectURL(audioBlob);
+                            const audio = new Audio(audioUrl);
+                            audio.play();
+
+                            // 停止所有音轨
+                            stream.getTracks().forEach(track => track.stop());
+
+                            // 更新录音次数
+                            progressData.recordTimes++;
+                            updateProgressData();
+                            updateProgressDisplay();
+                        });
+                    } catch (err) {
+                        alert('录音权限被拒绝，请开启麦克风权限后再试！');
+                        console.error('录音失败：', err);
+                    }
+                } else {
+                    // 结束录音
+                    mediaRecorder.stop();
+                    recording = false;
+                    this.classList.remove('recording');
+                    recordTip.classList.remove('show');
+                }
+            });
+
+            // 答题选项点击
+            optionItems.forEach(option => {
+                option.addEventListener('click', function() {
+                    const parentOptions = this.parentElement;
+                    parentOptions.querySelectorAll('.option-item').forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+
+                    const questionIndex = this.closest('.question-area').dataset.index;
+                    userAnswers[questionIndex] = {
+                        selected: this.textContent,
+                        isCorrect: this.dataset.answer === 'true'
+                    };
+
+                    const nextBtn = this.closest('.question-area').querySelector('.next-btn');
+                    nextBtn.style.display = 'inline-block';
+                });
+            });
+
+            // 下一题按钮
+            nextBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const currentQuestion = this.closest('.question-area');
+                    const currentIndex = parseInt(currentQuestion.dataset.index);
+                    currentQuestion.classList.remove('active');
+
+                    if (currentIndex < questionAreas.length - 1) {
+                        currentQuestionIndex = currentIndex + 1;
+                        questionAreas[currentQuestionIndex].classList.add('active');
+                    } else {
+                        // 显示成绩
+                        showQuizResult();
+                    }
+                });
+            });
+
+            // 重新闯关
+            quizRestartBtn.addEventListener('click', function() {
+                userAnswers = [];
+                currentQuestionIndex = 0;
+                quizResult.style.display = 'none';
+
+                questionAreas.forEach((area, index) => {
+                    area.classList.remove('active');
+                    if (index === 0) {
+                        area.classList.add('active');
+                    }
+                    area.querySelectorAll('.option-item').forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    area.querySelector('.next-btn').style.display = 'none';
+                });
+            });
+        }
+
+        // ---------------- 拼音网格渲染 ----------------
+        function renderPinyinGrid() {
+            pinyinGrid.innerHTML = '';
+            const pinyins = pinyinData[currentPinyinCategory];
+
+            pinyins.forEach(pinyin => {
+                const pinyinItem = document.createElement('div');
+                pinyinItem.className = 'pinyin-item';
+                pinyinItem.dataset.char = pinyin.char;
+                pinyinItem.dataset.pronounce = pinyin.pronounce;
+                pinyinItem.innerHTML = `
+                    <div class="pinyin-char">${pinyin.char}</div>
+                    <div class="pinyin-pronounce">${pinyin.pronounce}</div>
+                `;
+                pinyinGrid.appendChild(pinyinItem);
+            });
+        }
+
+        // ---------------- 文字朗读功能 ----------------
+        function speakText(text) {
+            // 检查浏览器是否支持语音合成
+            if ('speechSynthesis' in window) {
+                // 停止之前的朗读
+                window.speechSynthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                // 设置语言为中文
+                utterance.lang = 'zh-CN';
+                // 设置语速（0.1-10，默认1）
+                utterance.rate = 0.9;
+                // 设置音量（0-1，默认1）
+                utterance.volume = 1;
+                // 设置音调（0-2，默认1）
+                utterance.pitch = 1.2; // 稍高音调，更适合小朋友
+
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('你的浏览器不支持文字朗读功能，请更换现代浏览器（如Chrome、Edge）！');
+            }
+        }
+
+        // ---------------- 答题结果展示 ----------------
+        function showQuizResult() {
+            // 计算总分
+            let score = 0;
+            userAnswers.forEach(answer => {
+                if (answer && answer.isCorrect) {
+                    score += 10;
+                }
+            });
+            totalScore.textContent = score;
+            progressData.quizScore = score;
+            updateProgressData();
+
+            // 生成答案列表
+            answerList.innerHTML = '';
+            questionData.forEach((data, index) => {
+                const answerItem = document.createElement('div');
+                answerItem.className = 'answer-item';
+                answerItem.innerHTML = `
+                    <div class="answer-question">${data.title}</div>
+                    <div class="answer-correct">正确答案：${data.correctAnswer}</div>
+                    <div class="answer-analysis">解析：${data.analysis}</div>
+                `;
+                answerList.appendChild(answerItem);
+            });
+
+            // 显示结果
+            quizResult.style.display = 'block';
+            // 更新进度显示
+            updateProgressDisplay();
+        }
+
+        // ---------------- 学习进度更新 ----------------
+        function updateCategoryProgress(category) {
+            // 每个分类点击一次拼音，进度增加一定比例
+            switch (category) {
+                case 'shengmu':
+                    progressData.shengmu = Math.min(100, progressData.shengmu + 5);
+                    break;
+                case 'yunmu':
+                    progressData.yunmu = Math.min(100, progressData.yunmu + 5);
+                    break;
+                case 'zhiyin':
+                    progressData.zhiyin = Math.min(100, progressData.zhiyin + 8);
+                    break;
+            }
+            updateProgressData();
+            updateProgressDisplay();
+        }
+
+        function updateProgressData() {
+            // 保存到本地存储，刷新页面不丢失
+            localStorage.setItem('pinyinProgress', JSON.stringify(progressData));
+        }
+
+        function loadProgressData() {
+            // 从本地存储加载进度
+            const savedProgress = localStorage.getItem('pinyinProgress');
+            if (savedProgress) {
+                progressData = JSON.parse(savedProgress);
+            }
+        }
+
+        function updateProgressDisplay() {
+            // 更新进度条和数值
+            shengmuProgress.style.width = `${progressData.shengmu}%`;
+            shengmuValue.textContent = `${progressData.shengmu}%`;
+
+            yunmuProgress.style.width = `${progressData.yunmu}%`;
+            yunmuValue.textContent = `${progressData.yunmu}%`;
+
+            zhiyinProgress.style.width = `${progressData.zhiyin}%`;
+            zhiyinValue.textContent = `${progressData.zhiyin}%`;
+
+            const quizPercent = (progressData.quizScore / 100) * 100;
+            quizProgress.style.width = `${quizPercent}%`;
+            quizValue.textContent = `${progressData.quizScore}/100`;
+
+            const recordPercent = Math.min(100, (progressData.recordTimes / 20) * 100);
+            recordProgress.style.width = `${recordPercent}%`;
+            recordValue.textContent = `${progressData.recordTimes}次`;
+
+            // 更新掌握情况
+            renderMasteryList();
+        }
+
+        // ---------------- 拼音掌握情况渲染 ----------------
+        function renderMasteryList() {
+            masteryList.innerHTML = '';
+            const categories = [
+                { name: '声母', value: progressData.shengmu },
+                { name: '韵母', value: progressData.yunmu },
+                { name: '整体认读音节', value: progressData.zhiyin },
+                { name: '答题能力', value: (progressData.quizScore / 100) * 100 },
+                { name: '口语跟读', value: Math.min(100, (progressData.recordTimes / 20) * 100) }
+            ];
+
+            categories.forEach(item => {
+                const masteryItem = document.createElement('div');
+                masteryItem.className = 'mastery-item';
+                let level = '';
+                if (item.value < 30) {
+                    level = '入门';
+                } else if (item.value < 60) {
+                    level = '熟练';
+                } else if (item.value < 90) {
+                    level = '精通';
+                } else {
+                    level = '大师';
+                }
+                masteryItem.innerHTML = `
+                    <div class="mastery-name">${item.name}</div>
+                    <div class="mastery-level">${level}</div>
+                `;
+                masteryList.appendChild(masteryItem);
+            });
+        }
+
+        // ---------------- 初始化执行 ----------------
+        loadProgressData();
+        init();
+    </script>
+</body>
+</html>
